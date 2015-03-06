@@ -4,10 +4,8 @@
  * 
  */
 
-var websiteName = 'mrbean';
-var cssSelector = '#menu-item-16 a';
 
-chrome.webRequest.onBeforeSendHeaders.addListener(function( details ) {
+chrome.webRequest.onBeforeRequest.addListener(function( details ) {
 
     chrome.tabs.get(details.tabId, function( tab ) {
 
@@ -17,6 +15,15 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function( details ) {
 
         // send message only when request comes from localhost or ngrok xmlrequest
         if ( tab.url.indexOf( 'localhost' ) !== -1 || tab.url.indexOf( 'ngrok' ) !== -1 || tab.url.indexOf( 'simuapp.herokuapp.com' ) !== -1 ) {
+
+            var formData = details.requestBody.formData,
+                dataObj = {};
+            for ( var data in formData ) {
+                var val = formData[data][0];
+                var key = data.replace(/tasks\[/, '').replace(/\]$/, '');
+                dataObj[key] = val;
+            }
+
             // send message to contentscript.js
             chrome.tabs.query({}, function( tabs ) {
 
@@ -24,12 +31,12 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function( details ) {
                 for ( var i = 0; i < tabs.length; i++ ) {
 
                     var _tab = tabs[i];
-                    if ( _tab.url.indexOf( websiteName ) !== -1 ) { // find tab url
+                    if ( _tab.url.indexOf( dataObj.website ) !== -1 ) { // find tab url
 
                         // get css selector param from http header
                         chrome.tabs.sendMessage(_tab.id, {
                             from: 'background',
-                            selector: cssSelector,
+                            selector: dataObj.target,
                             details: details
                         }, function() {});
                         return false;
@@ -42,4 +49,4 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function( details ) {
 
     });
 
-}, { urls: ['http://*/*', 'https://*/'], types: ['xmlhttprequest'] }); // <-- listen to web socket request
+}, { urls: ['http://*/*', 'https://*/'], types: ['xmlhttprequest'] }, ['requestBody']); // <-- listen to web socket request

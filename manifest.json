@@ -1,0 +1,33 @@
+{
+  "manifest_version": 2,
+
+  "name": "Simu Sync",
+  "description": "Perform a single action across multiple computers",
+  "version": "1.0.1",
+
+  "content_scripts": [{
+      "js": ["jquery.js", "contentscript.js"],
+      "matches": ["<all_urls>", "http://*/*", "https://*/*"],
+      "run_at": "document_start",
+      "all_frames": true
+  }],
+
+  "background": {
+    "persistent": true,
+    "scripts": ["background.js"]
+  },
+
+  "web_accessible_resources": ["script.js"],
+  "permissions": ["background", "tabs", "webNavigation", "webRequest", "webRequestBlocking", "<all_urls>"]
+
+  // "browser_action": {
+  //   "default_icon": "icon.png",
+  //   "default_popup": "popup.html"
+  // },
+
+  // "icons": { 
+  //   "16": "icon.png",
+  //   "48": "icon.png",
+  //   "128": "icon.png"
+  // }
+}

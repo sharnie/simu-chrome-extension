@@ -16,7 +16,7 @@ chrome.webRequest.onBeforeSendHeaders.addListener(function( details ) {
          */
 
         // send message only when request comes from localhost or ngrok xmlrequest
-        if ( tab.url.indexOf( 'localhost' ) !== -1 || tab.url.indexOf( 'ngrok' ) !== -1 ) {
+        if ( tab.url.indexOf( 'localhost' ) !== -1 || tab.url.indexOf( 'ngrok' ) !== -1 || tab.url.indexOf( 'simuapp.herokuapp.com' ) !== -1 ) {
             // send message to contentscript.js
             chrome.tabs.query({}, function( tabs ) {
 
